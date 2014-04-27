@@ -167,7 +167,7 @@ class TagManager(models.Manager):
             compiler = queryset.query.get_compiler(using='default')
             extra_joins = ' '.join(compiler.get_from_clause()[0][1:])
             where, params = queryset.query.where.as_sql(
-                compiler.quote_name_unless_alias, compiler.connection
+                compiler, compiler.connection
             )
         else:
             # Django pre-1.2
