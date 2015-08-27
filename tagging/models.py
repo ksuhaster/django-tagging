@@ -24,6 +24,15 @@ qn = connection.ops.quote_name
 # Managers #
 ############
 
+def find_largest_tag(tagname, tags):
+    for tag in tags:
+        if tag == tagname:
+            continue
+        if tag.lower() == tagname.lower():
+            if tag < tagname:
+                tagname = tag
+    return tagname
+
 class TagManager(models.Manager):
 
     def update_tags(self, obj, tag_names):
@@ -37,6 +46,11 @@ class TagManager(models.Manager):
         if settings.FORCE_LOWERCASE_TAGS:
             updated_tag_names = [t.lower() for t in updated_tag_names]
 
+        for tag_name in list(updated_tag_names):
+            duplicated_tag = find_largest_tag(tag_name, updated_tag_names)
+            if duplicated_tag != tag_name:
+                updated_tag_names.pop(updated_tag_names.index(tag_name))
+
         # Remove tags which no longer apply
         tags_for_removal = [tag for tag in current_tags
                             if tag.name not in updated_tag_names]
@@ -47,6 +61,7 @@ class TagManager(models.Manager):
                 tag__in=tags_for_removal).delete()
         # Add new tags
         current_tag_names = [tag.name for tag in current_tags]
+
         for tag_name in updated_tag_names:
             if tag_name not in current_tag_names:
                 tag, created = self.get_or_create(name=tag_name)
@@ -66,6 +81,11 @@ class TagManager(models.Manager):
         tag_name = tag_names[0]
         if settings.FORCE_LOWERCASE_TAGS:
             tag_name = tag_name.lower()
+
+        duplicated_tag = find_largest_tag(tag_name, tag_names)
+        if duplicated_tag != tag_name:
+            tag_name = duplicated_tag
+
         tag, created = self.get_or_create(name=tag_name)
         ctype = ContentType.objects.get_for_model(obj)
         TaggedItem._default_manager.get_or_create(
