@@ -26,49 +26,7 @@ def parse_tag_input(input):
 
     input = force_text(input)
 
-    words = []
-    buffer = []
-    # Defer splitting of non-quoted sections until we know if there are
-    # any unquoted commas.
-    to_be_split = []
-    saw_loose_comma = False
-    open_quote = False
-    i = iter(input)
-    try:
-        while 1:
-            c = next(i)
-            if c == '"':
-                if buffer:
-                    to_be_split.append(''.join(buffer))
-                    buffer = []
-                # Find the matching quote
-                open_quote = True
-                c = next(i)
-                while c != '"':
-                    buffer.append(c)
-                    c = next(i)
-                if buffer:
-                    word = ''.join(buffer).strip()
-                    if word:
-                        words.append(word)
-                    buffer = []
-                open_quote = False
-            else:
-                if not saw_loose_comma and c == ',':
-                    saw_loose_comma = True
-                buffer.append(c)
-    except StopIteration:
-        # If we were parsing an open quote which was never closed treat
-        # the buffer as unquoted.
-        if buffer:
-            if open_quote and ',' in buffer:
-                saw_loose_comma = True
-            to_be_split.append(''.join(buffer))
-    if to_be_split:
-        delimiter = u','
-        for chunk in to_be_split:
-            words.extend(split_strip(chunk, delimiter))
-    words = list(set(words))
+    words = list(set(split_strip(input, u',')))
     words.sort()
     return words
 
