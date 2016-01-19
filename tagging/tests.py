@@ -23,6 +23,7 @@ from tagging.utils import LINEAR
 class TestParseTagInput(TestCase):
     def test_with_simple_space_delimited_tags(self):
         """ Test with simple space-delimited tags. """
+
         self.assertEquals(parse_tag_input('one'), [u'one'])
         self.assertEquals(parse_tag_input('one two'), [u'one', u'two'])
         self.assertEquals(parse_tag_input('one two three'), [u'one', u'three', u'two'])
@@ -31,6 +32,7 @@ class TestParseTagInput(TestCase):
     def test_with_comma_delimited_multiple_words(self):
         """ Test with comma-delimited multiple words.
             An unquoted comma in the input will trigger this. """
+
         self.assertEquals(parse_tag_input(',one'), [u'one'])
         self.assertEquals(parse_tag_input(',one two'), [u'one two'])
         self.assertEquals(parse_tag_input(',one two three'), [u'one two three'])
@@ -266,6 +268,7 @@ class TestBasicTagging(TestCase):
         self.failUnless(get_tag('bar') in tags)
         self.failUnless(get_tag('baz') in tags)
         self.failUnless(get_tag('foo') in tags)
+
         # now add a tag that doesn't already exist
         Tag.objects.add_tag(self.dead_parrot, 'zip')
         tags = Tag.objects.get_for_object(self.dead_parrot)
@@ -933,48 +936,10 @@ class TestTagFieldInForms(TestCase):
         self.assertEquals(edit_string_for_tags([plain, comma]), u'plain "com,ma"')
         self.assertEquals(edit_string_for_tags([comma, spaces]), u'"com,ma", spa ces')
 
-    def test_tag_d_validation(self):
-        t = TagField(required=False)
-        self.assertEqual(t.clean(''), '')
-        self.assertEqual(t.clean('foo'), 'foo')
-        self.assertEqual(t.clean('foo bar baz'), 'foo bar baz')
-        self.assertEqual(t.clean('foo,bar,baz'), 'foo,bar,baz')
-        self.assertEqual(t.clean('foo, bar, baz'), 'foo, bar, baz')
-        self.assertEqual(
-            t.clean('foo qwertyuiopasdfghjklzxcvbnm'
-                    'qwertyuiopasdfghjklzxcvb bar'),
-            'foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvb bar')
-        self.assertRaises(
-            forms.ValidationError, t.clean,
-            'foo qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbn bar')
-
     def test_tag_get_from_model(self):
         FormTest.objects.create(tags='test3 test2 test1')
         FormTest.objects.create(tags='toto titi')
         self.assertEquals(FormTest.tags, 'test1 test2 test3 titi toto')
-
-
-#########
-# Forms #
-#########
-
-
-class TestTagAdminForm(TestCase):
-
-    def test_clean_name(self):
-        datas = {'name': 'tag'}
-        form = TagAdminForm(datas)
-        self.assertTrue(form.is_valid())
-
-    def test_clean_name_multi(self):
-        datas = {'name': 'tag error'}
-        form = TagAdminForm(datas)
-        self.assertFalse(form.is_valid())
-
-    def test_clean_name_too_long(self):
-        datas = {'name': 't' * (settings.MAX_TAG_LENGTH + 1)}
-        form = TagAdminForm(datas)
-        self.assertFalse(form.is_valid())
 
 #########
 # Views #
