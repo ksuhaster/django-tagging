@@ -502,7 +502,20 @@ class Tag(models.Model):
         _('name'), max_length=settings.MAX_TAG_LENGTH,
         unique=True, db_index=True)
 
+    uk_name = models.CharField(
+        _('uk name'), max_length=settings.MAX_TAG_LENGTH, blank=True,
+        default='')
+
+    en_name = models.CharField(
+        _('en name'), max_length=settings.MAX_TAG_LENGTH, blank=True,
+        default='')
+
     objects = TagManager()
+
+    def get_lang_name(self, lang=None):
+        if not lang or lang == 'ru':
+            return self.name
+        return getattr(self, lang + '_name', '') or self.name
 
     class Meta:
         ordering = ('name',)
