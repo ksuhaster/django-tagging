@@ -143,9 +143,10 @@ class TagManager(models.Manager):
                        params)
         tags = []
         for row in cursor.fetchall():
-            t = self.model(*row[:2])
+            # print(row)
+            t = self.model(*row[:4])
             if counts:
-                t.count = row[2]
+                t.count = row[4]
             tags.append(t)
         return tags
 
@@ -268,9 +269,9 @@ class TagManager(models.Manager):
         cursor.execute(query, params)
         related = []
         for row in cursor.fetchall():
-            tag = self.model(*row[:2])
+            tag = self.model(*row[:4])
             if counts is True:
-                tag.count = row[2]
+                tag.count = row[4]
             related.append(tag)
         return related
 
