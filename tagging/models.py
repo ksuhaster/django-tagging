@@ -144,9 +144,9 @@ class TagManager(models.Manager):
         tags = []
         for row in cursor.fetchall():
             # print(row)
-            t = self.model(*row[:4])
+            t = self.model(*row[:5])
             if counts:
-                t.count = row[4]
+                t.count = row[5]
             tags.append(t)
         return tags
 
