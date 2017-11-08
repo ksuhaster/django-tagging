@@ -11,6 +11,8 @@ from tagging.forms import TagAdminForm
 class TagAdmin(admin.ModelAdmin):
     form = TagAdminForm
 
+    list_filter = ('rubric', )
+
     class Meta:
         fields = '__all__'
 
