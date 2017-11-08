@@ -112,7 +112,7 @@ class TagManager(models.Manager):
         model_table = qn(model._meta.db_table)
         model_pk = '%s.%s' % (model_table, qn(model._meta.pk.column))
         query = """
-        SELECT DISTINCT %(tag)s.id, %(tag)s.name, %(tag)s.uk_name, %(tag)s.en_name%(count_sql)s
+        SELECT DISTINCT %(tag)s.id, %(tag)s.name, %(tag)s.uk_name, %(tag)s.en_name, %(tag)s.rubric%(count_sql)s
         FROM
             %(tag)s
             INNER JOIN %(tagged_item)s
