@@ -517,6 +517,8 @@ class Tag(models.Model):
         _('en name'), max_length=settings.MAX_TAG_LENGTH, blank=True,
         default='')
 
+    rubric = models.BooleanField(default=False, db_index=True)
+
     objects = TagManager()
 
     def get_lang_name(self, lang=None):
