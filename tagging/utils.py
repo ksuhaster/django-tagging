@@ -4,7 +4,7 @@ calculation.
 """
 import math
 
-from django.utils import six
+import six
 from django.db.models.query import QuerySet
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
@@ -26,7 +26,7 @@ def parse_tag_input(input):
 
     input = force_text(input)
 
-    words = list(set(split_strip(input, u',')))
+    words = list(set(split_strip(input, ',')))
     words.sort()
     return words
 
@@ -57,7 +57,7 @@ def edit_string_for_tags(tags):
     for tag in tags:
         name = tag.name
         names.append(name)
-    return u', '.join(names)
+    return ', '.join(names)
 
 
 def get_queryset_and_model(queryset_or_model):
