@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='tag',
-            name=b'en_name',
+            name='en_name',
             field=models.CharField(blank=True, default=b'', max_length=50, verbose_name='en name'),
         ),
     ]
