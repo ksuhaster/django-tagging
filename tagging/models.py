@@ -3,8 +3,8 @@ Models and managers for tagging.
 """
 from django.db import models
 from django.db import connection
-from django.utils.encoding import smart_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_str
+from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
@@ -171,9 +171,11 @@ class TagManager(models.Manager):
         if filters is None:
             filters = {}
 
-        queryset = model._default_manager.filter()
-        for f in list(filters.items()):
-            queryset.query.add_filter(f)
+        queryset = model._default_manager.all()
+        for key, value in filters.items():
+            filter_dict = {key: value}
+            queryset = queryset.filter(**filter_dict)
+
         usage = self.usage_for_queryset(queryset, counts, min_count)
 
         return usage
@@ -564,4 +566,4 @@ class TaggedItem(models.Model):
         verbose_name_plural = _('tagged items')
 
     def __str__(self):
-        return '%s [%s]' % (smart_text(self.object), smart_text(self.tag))
+        return '%s [%s]' % (smart_str(self.object), smart_str(self.tag))

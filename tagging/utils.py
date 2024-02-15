@@ -6,8 +6,8 @@ import math
 
 import six
 from django.db.models.query import QuerySet
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.encoding import force_str
+from django.utils.translation import gettext as _
 
 # Font size distribution algorithms
 LOGARITHMIC, LINEAR = 1, 2
@@ -24,7 +24,7 @@ def parse_tag_input(input):
     if not input:
         return []
 
-    input = force_text(input)
+    input = force_str(input)
 
     words = list(set(split_strip(input, ',')))
     words.sort()
@@ -114,7 +114,7 @@ def get_tag_list(tags):
                 contents.add('int')
         if len(contents) == 1:
             if 'string' in contents:
-                return Tag.objects.filter(name__in=[force_text(tag)
+                return Tag.objects.filter(name__in=[force_str(tag)
                                                     for tag in tags])
             elif 'tag' in contents:
                 return tags
